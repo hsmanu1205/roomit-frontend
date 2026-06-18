@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import api from "../../../services/api";
+import Navbar from "../../../components/Navbar";
+import Footer from "../../../components/Footer";
+import Link from "next/link";
 
 export default function RoomAvailability() {
   const params = useParams();
@@ -12,89 +15,82 @@ export default function RoomAvailability() {
     new Date().toISOString().split("T")[0]
   );
 
-  const [availability, setAvailability] =
-    useState([]);
-
-  const [loading, setLoading] =
-    useState(false);
-
-  const fetchAvailability = async () => {
-    try {
-      setLoading(true);
-
-      const { data } = await api.get(
-        `/rooms/${roomId}/availability?date=${date}`
-      );
-
-      setAvailability(data.availability);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [availability, setAvailability] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-  const loadAvailability = async () => {
-    try {
-      setLoading(true);
+    const loadAvailability = async () => {
+      try {
+        setLoading(true);
 
-      const { data } = await api.get(
-        `/rooms/${roomId}/availability?date=${date}`
-      );
+        const { data } = await api.get(
+          `/rooms/${roomId}/availability?date=${date}`
+        );
 
-      setAvailability(data.availability);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
+        setAvailability(data.availability);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (roomId) {
+      loadAvailability();
     }
-  };
-
-  if (roomId) {
-    loadAvailability();
-  }
-}, [roomId, date]);
+  }, [roomId, date]);
 
   return (
-    <div className="min-h-screen bg-slate-100 p-10">
-        <h1
-  style={{
-    color: "black",
-    fontSize: "40px",
-    fontWeight: "bold",
-  }}
->
-  Room Availability
-</h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 p-8">
 
-      <input
-        type="date"
-        value={date}
-        onChange={(e) =>
-          setDate(e.target.value)
-        }
-        className="border-2 border-slate-300 bg-white text-black p-3 rounded-lg mb-8"
-      />
+      <Navbar />
+
+      <div className="bg-white rounded-3xl shadow-xl p-8 mb-8">
+        <h1 className="text-5xl font-bold text-slate-900 mb-3">
+          Room Availability
+        </h1>
+
+        <p className="text-slate-600 text-lg">
+          Select a date and choose an available slot.
+        </p>
+      </div>
+
+      <div className="mb-8">
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className="border border-slate-300 bg-white text-black px-4 py-3 rounded-xl shadow"
+        />
+      </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <div className="text-xl font-semibold">
+          Loading Availability...
+        </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
           {availability.map((slot) => (
-            <div
+            <Link
               key={slot.slot}
-              className={`p-4 rounded text-center font-semibold ${
+              href={
                 slot.available
-                  ? "bg-green-500 text-white"
-                  : "bg-red-500 text-white"
+                  ? `/book/${roomId}?date=${date}&startTime=${slot.slot}`
+                  : "#"
+              }
+              className={`p-4 rounded-2xl text-center font-bold text-lg transition duration-300 ${
+                slot.available
+                  ? "bg-green-500 hover:bg-green-600 text-white shadow-lg"
+                  : "bg-red-500 text-white cursor-not-allowed"
               }`}
             >
               {slot.slot}
-            </div>
+            </Link>
           ))}
         </div>
       )}
+
+      <Footer />
     </div>
   );
 }

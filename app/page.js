@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export default function Home() {
   const [rooms, setRooms] = useState([]);
@@ -24,49 +26,63 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="p-10 text-xl">
+      <div className="min-h-screen flex items-center justify-center text-2xl font-bold">
         Loading Rooms...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 p-10">
-      <h1 className="text-5xl font-bold text-slate-900 mb-10">
-        RoomIt Booking System
-      </h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-slate-200 p-8">
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <Navbar />
+
+      <div className="text-center mb-12">
+        <h1 className="text-6xl font-bold text-slate-900 mb-4">
+          RoomIt Booking System
+        </h1>
+
+        <p className="text-xl text-slate-600">
+          Smart Meeting Room Management Platform
+        </p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-8">
         {rooms.map((room) => (
           <div
             key={room._id}
-            className="bg-white rounded-xl shadow-lg p-6 border"
+            className="bg-white rounded-3xl shadow-xl p-8 border border-slate-200 hover:shadow-2xl hover:-translate-y-2 transition duration-300"
           >
-            <h2 className="text-2xl font-bold text-slate-900 mb-3">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">
               {room.name}
             </h2>
 
-            <p className="text-slate-700 mb-2">
-              <strong>Location:</strong> {room.location}
-            </p>
+            <div className="space-y-2 mb-6">
+              <p className="text-slate-700">
+                <strong>Location:</strong> {room.location}
+              </p>
 
-            <p className="text-slate-700 mb-2">
-              <strong>Capacity:</strong> {room.capacity}
-            </p>
+              <p className="text-slate-700">
+                <strong>Capacity:</strong> {room.capacity} People
+              </p>
 
-            <p className="text-slate-700 mb-4">
-              <strong>Buffer:</strong> {room.bufferMinutes} mins
-            </p>
+              <p className="text-slate-700">
+                <strong>Buffer Time:</strong>{" "}
+                {room.bufferMinutes} mins
+              </p>
+            </div>
 
             <a
               href={`/rooms/${room._id}`}
-              className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg"
+              className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition"
             >
               View Availability
             </a>
           </div>
         ))}
       </div>
+
+      <Footer />
     </div>
   );
 }
