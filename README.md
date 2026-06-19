@@ -6,7 +6,7 @@ Frontend for RoomIt Meeting Room Booking System built using Next.js, React, Tail
 
 ## Live Demo
 
-🔗 Live Demo: PASTE_FRONTEND_DEPLOYMENT_LINK_HERE
+🔗 Live Demo: https://roomit-frontend-alpha.vercel.app/
 
 ---
 
